@@ -2,6 +2,7 @@ from click.testing import CliRunner
 from healthkit_to_sqlite import cli, utils
 import pytest
 import sqlite_utils
+from sqlite_utils.db import ForeignKey
 import pathlib
 
 
@@ -60,3 +61,59 @@ def test_converted_activity_summaries(converted):
             "appleStandHoursGoal": "12",
         },
     ] == list(converted["activity_summary"].rows)
+
+
+def test_converted_workouts(converted):
+    assert [
+        {
+            "id": "e615a9651eab4d95debed14c2c2f7cce0c31feed",
+            "workoutActivityType": "HKWorkoutActivityTypeRunning",
+            "duration": "5.19412346680959",
+            "durationUnit": "min",
+            "totalDistance": "0.4971749504535062",
+            "totalDistanceUnit": "mi",
+            "totalEnergyBurned": "48.74499999999999",
+            "totalEnergyBurnedUnit": "kcal",
+            "sourceName": "Apple\xa0Watch",
+            "sourceVersion": "3.1",
+            "creationDate": "2016-11-14 07:33:49 -0700",
+            "startDate": "2016-11-14 07:25:41 -0700",
+            "endDate": "2016-11-14 07:30:52 -0700",
+            "metadata_HKTimeZone": "America/Los_Angeles",
+            "metadata_HKWeatherTemperature": "56 degF",
+            "metadata_HKWeatherHumidity": "96 %",
+            "workout_events": "[]",
+        }
+    ] == list(converted["workouts"].rows)
+    assert [
+        ForeignKey(
+            table="workout_points",
+            column="workout_id",
+            other_table="workouts",
+            other_column="id",
+        )
+    ] == converted["workout_points"].foreign_keys
+    assert [
+        {
+            "date": "2016-11-14 07:25:44 -0700",
+            "latitude": "37.7777",
+            "longitude": "-122.426",
+            "altitude": "21.2694",
+            "horizontalAccuracy": "2.40948",
+            "verticalAccuracy": "1.67859",
+            "course": "-1",
+            "speed": "2.48034",
+            "workout_id": "e615a9651eab4d95debed14c2c2f7cce0c31feed",
+        },
+        {
+            "date": "2016-11-14 07:25:44 -0700",
+            "latitude": "37.7777",
+            "longitude": "-122.426",
+            "altitude": "21.2677",
+            "horizontalAccuracy": "2.40059",
+            "verticalAccuracy": "1.67236",
+            "course": "-1",
+            "speed": "2.48034",
+            "workout_id": "e615a9651eab4d95debed14c2c2f7cce0c31feed",
+        },
+    ] == list(converted["workout_points"].rows)

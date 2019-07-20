@@ -18,4 +18,21 @@ def convert_xml_to_sqlite(fp, db):
     for tag, el in find_all_tags(fp, {"Record", "Workout", "ActivitySummary"}):
         if tag == "ActivitySummary":
             activity_summaries.append(dict(el.attrib))
+        elif tag == "Workout":
+            workout_to_db(el, db)
     db["activity_summary"].upsert_all(activity_summaries, hash_id="id")
+
+
+def workout_to_db(workout, db):
+    record = dict(workout.attrib)
+    # add metadata entry items as extra keys
+    for el in workout.findall("MetadataEntry"):
+        record["metadata_" + el.attrib["key"]] = el.attrib["value"]
+    # Dump any WorkoutEvent in a nested list for the moment
+    record["workout_events"] = [el.attrib for el in workout.findall("WorkoutEvent")]
+    pk = db["workouts"].insert(record, hash_id="id", alter=True).last_pk
+    points = [
+        dict(el.attrib, workout_id=pk)
+        for el in workout.findall("WorkoutRoute/Location")
+    ]
+    db["workout_points"].insert_all(points, foreign_keys=[("workout_id", "workouts")])
