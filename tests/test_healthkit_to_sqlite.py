@@ -117,3 +117,44 @@ def test_converted_workouts(converted):
             "workout_id": "e615a9651eab4d95debed14c2c2f7cce0c31feed",
         },
     ] == list(converted["workout_points"].rows)
+
+
+def test_converted_records(converted):
+    assert [
+        {
+            "id": "8bc7fb164391c879fef1333fb9d3a3171a5fe5cf",
+            "type": "HKQuantityTypeIdentifierBodyMassIndex",
+            "sourceName": "Health Mate",
+            "sourceVersion": "2160040",
+            "unit": "count",
+            "creationDate": "2016-11-20 17:57:19 -0700",
+            "startDate": "2016-04-18 08:25:32 -0700",
+            "endDate": "2016-04-18 08:25:32 -0700",
+            "value": "22.5312",
+            "metadata_Health Mate App Version": "2.16.0",
+            "metadata_Withings User Identifier": "12345",
+            "metadata_Modified Date": "2016-04-18 15:56:05 +0000",
+            "metadata_Withings Link": "withings-bd2://timeline/measure?userid=12345&date=482685932&type=1",
+            "metadata_HKWasUserEntered": "0",
+            "device": None,
+            "metadata_HKMetadataKeyHeartRateMotionContext": None,
+        },
+        {
+            "id": "3d9d67197be1bbf15ff156f126788e946184acc6",
+            "type": "HKQuantityTypeIdentifierHeartRate",
+            "sourceName": "Apple\xa0Watch",
+            "sourceVersion": "4.3.1",
+            "unit": "count/min",
+            "creationDate": "2018-09-10 02:47:35 -0700",
+            "startDate": "2018-09-10 02:28:55 -0700",
+            "endDate": "2018-09-10 02:28:55 -0700",
+            "value": "72",
+            "metadata_Health Mate App Version": None,
+            "metadata_Withings User Identifier": None,
+            "metadata_Modified Date": None,
+            "metadata_Withings Link": None,
+            "metadata_HKWasUserEntered": None,
+            "device": "<<HKDevice: 0x282a45810>, name:Apple Watch, manufacturer:Apple, model:Watch, hardware:Watch2,4, software:4.3.1>",
+            "metadata_HKMetadataKeyHeartRateMotionContext": "0",
+        },
+    ] == list(converted["records"].rows)

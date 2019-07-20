@@ -15,11 +15,22 @@ def find_all_tags(fp, tags):
 
 def convert_xml_to_sqlite(fp, db):
     activity_summaries = []
+    records = []
     for tag, el in find_all_tags(fp, {"Record", "Workout", "ActivitySummary"}):
         if tag == "ActivitySummary":
             activity_summaries.append(dict(el.attrib))
         elif tag == "Workout":
             workout_to_db(el, db)
+        elif tag == "Record":
+            record = dict(el.attrib)
+            for child in el.findall("MetadataEntry"):
+                record["metadata_" + child.attrib["key"]] = child.attrib["value"]
+            records.append(record)
+            if len(records) >= 100:
+                db["records"].insert_all(records, alter=True, hash_id="id")
+                records = []
+    if records:
+        db["records"].insert_all(records, alter=True, hash_id="id")
     db["activity_summary"].upsert_all(activity_summaries, hash_id="id")
 
 
