@@ -27,11 +27,11 @@ def convert_xml_to_sqlite(fp, db):
                 record["metadata_" + child.attrib["key"]] = child.attrib["value"]
             records.append(record)
             if len(records) >= 100:
-                db["records"].insert_all(records, alter=True, hash_id="id")
+                db["records"].insert_all(records, alter=True)
                 records = []
     if records:
-        db["records"].insert_all(records, alter=True, hash_id="id")
-    db["activity_summary"].upsert_all(activity_summaries, hash_id="id")
+        db["records"].insert_all(records, alter=True)
+    db["activity_summary"].insert_all(activity_summaries)
 
 
 def workout_to_db(workout, db):
@@ -41,7 +41,7 @@ def workout_to_db(workout, db):
         record["metadata_" + el.attrib["key"]] = el.attrib["value"]
     # Dump any WorkoutEvent in a nested list for the moment
     record["workout_events"] = [el.attrib for el in workout.findall("WorkoutEvent")]
-    pk = db["workouts"].insert(record, hash_id="id", alter=True).last_pk
+    pk = db["workouts"].insert(record, alter=True, hash_id="id").last_pk
     points = [
         dict(el.attrib, workout_id=pk)
         for el in workout.findall("WorkoutRoute/Location")

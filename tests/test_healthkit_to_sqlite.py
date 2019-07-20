@@ -37,9 +37,9 @@ def test_find_all_tags(xml_fp):
 
 
 def test_converted_activity_summaries(converted):
+    actual = list(converted["activity_summary"].rows)
     assert [
         {
-            "id": "f0801853ea483cb3b80f923abdffefdd9427a940",
             "dateComponents": "2016-11-15",
             "activeEnergyBurned": "590.252",
             "activeEnergyBurnedGoal": "630",
@@ -50,7 +50,6 @@ def test_converted_activity_summaries(converted):
             "appleStandHoursGoal": "12",
         },
         {
-            "id": "5aeb50d13bf455c2485ad008177c3f105949dee1",
             "dateComponents": "2016-11-16",
             "activeEnergyBurned": "323.513",
             "activeEnergyBurnedGoal": "630",
@@ -60,10 +59,11 @@ def test_converted_activity_summaries(converted):
             "appleStandHours": "9",
             "appleStandHoursGoal": "12",
         },
-    ] == list(converted["activity_summary"].rows)
+    ] == actual
 
 
 def test_converted_workouts(converted):
+    actual = list(converted["workouts"].rows)
     assert [
         {
             "id": "e615a9651eab4d95debed14c2c2f7cce0c31feed",
@@ -84,7 +84,7 @@ def test_converted_workouts(converted):
             "metadata_HKWeatherHumidity": "96 %",
             "workout_events": "[]",
         }
-    ] == list(converted["workouts"].rows)
+    ] == actual
     assert [
         ForeignKey(
             table="workout_points",
@@ -93,6 +93,7 @@ def test_converted_workouts(converted):
             other_column="id",
         )
     ] == converted["workout_points"].foreign_keys
+    actual_points = list(converted["workout_points"].rows)
     assert [
         {
             "date": "2016-11-14 07:25:44 -0700",
@@ -116,13 +117,13 @@ def test_converted_workouts(converted):
             "speed": "2.48034",
             "workout_id": "e615a9651eab4d95debed14c2c2f7cce0c31feed",
         },
-    ] == list(converted["workout_points"].rows)
+    ] == actual_points
 
 
 def test_converted_records(converted):
+    actual = list(converted["records"].rows)
     assert [
         {
-            "id": "8bc7fb164391c879fef1333fb9d3a3171a5fe5cf",
             "type": "HKQuantityTypeIdentifierBodyMassIndex",
             "sourceName": "Health Mate",
             "sourceVersion": "2160040",
@@ -140,7 +141,6 @@ def test_converted_records(converted):
             "metadata_HKMetadataKeyHeartRateMotionContext": None,
         },
         {
-            "id": "3d9d67197be1bbf15ff156f126788e946184acc6",
             "type": "HKQuantityTypeIdentifierHeartRate",
             "sourceName": "Apple\xa0Watch",
             "sourceVersion": "4.3.1",
@@ -157,4 +157,4 @@ def test_converted_records(converted):
             "device": "<<HKDevice: 0x282a45810>, name:Apple Watch, manufacturer:Apple, model:Watch, hardware:Watch2,4, software:4.3.1>",
             "metadata_HKMetadataKeyHeartRateMotionContext": "0",
         },
-    ] == list(converted["records"].rows)
+    ] == actual
