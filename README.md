@@ -23,6 +23,12 @@ Now you can convert the resulting `export.zip` file to SQLite like so:
 
     $ healthkit-to-sqlite export.zip healthkit.db
 
+A progress bar will be displayed. You can disable this using `--silent`.
+
+```
+Importing from HealthKit  [#-------------]    5%  00:01:33
+```
+
 You can explore the resulting data using [Datasette](https://datasette.readthedocs.io/) like this:
 
     $ datasette healthkit.db
