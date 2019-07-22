@@ -44,5 +44,7 @@ def cli(export_zip, db_path, silent, xml):
     if silent:
         convert_xml_to_sqlite(fp, db)
     else:
-        with click.progressbar(length=file_length, label="Importing data") as bar:
+        with click.progressbar(
+            length=file_length, label="Importing from HealthKit"
+        ) as bar:
             convert_xml_to_sqlite(fp, db, progress_callback=bar.update)
