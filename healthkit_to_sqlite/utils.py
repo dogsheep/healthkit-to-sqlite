@@ -1,24 +1,31 @@
 from xml.etree import ElementTree as ET
 
 
-def find_all_tags(fp, tags):
+def find_all_tags(fp, tags, progress_callback=None):
     parser = ET.XMLPullParser(["end"])
     while True:
-        chunk = fp.read(1024 * 1024 * 8)
+        chunk = fp.read(1024 * 1024)
         if not chunk:
             break
         parser.feed(chunk)
         for _, el in parser.read_events():
             if el.tag in tags:
                 yield el.tag, el
+        if progress_callback is not None:
+            progress_callback(len(chunk))
 
 
-def convert_xml_to_sqlite(fp, db):
+def convert_xml_to_sqlite(fp, db, progress_callback=None):
     activity_summaries = []
     records = []
-    for tag, el in find_all_tags(fp, {"Record", "Workout", "ActivitySummary"}):
+    for tag, el in find_all_tags(
+        fp, {"Record", "Workout", "ActivitySummary"}, progress_callback
+    ):
         if tag == "ActivitySummary":
             activity_summaries.append(dict(el.attrib))
+            if len(activity_summaries) >= 100:
+                db["activity_summary"].insert_all(activity_summaries)
+                activity_summaries = []
         elif tag == "Workout":
             workout_to_db(el, db)
         elif tag == "Record":
@@ -31,7 +38,8 @@ def convert_xml_to_sqlite(fp, db):
                 records = []
     if records:
         db["records"].insert_all(records, alter=True)
-    db["activity_summary"].insert_all(activity_summaries)
+    if activity_summaries:
+        db["activity_summary"].insert_all(activity_summaries)
 
 
 def workout_to_db(workout, db):

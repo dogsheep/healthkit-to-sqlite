@@ -7,8 +7,13 @@ import pathlib
 
 
 @pytest.fixture
-def xml_fp():
-    return open(pathlib.Path(__file__).parent / "export.xml", "r")
+def xml_path():
+    return pathlib.Path(__file__).parent / "export.xml"
+
+
+@pytest.fixture
+def xml_fp(xml_path):
+    return open(xml_path, "r")
 
 
 @pytest.fixture
@@ -158,3 +163,25 @@ def test_converted_records(converted):
             "metadata_HKMetadataKeyHeartRateMotionContext": "0",
         },
     ] == actual
+
+
+def test_cli_rejects_non_zip(xml_path, tmpdir):
+    result = CliRunner().invoke(cli.cli, [str(xml_path), str(tmpdir / "output.db")])
+    assert 1 == result.exit_code
+    assert (
+        "Error: File is not a zip file. Use --xml if you are "
+        "running against an XML file."
+    ) == result.output.strip()
+
+
+def test_cli_parses_xml_file(xml_path, tmpdir):
+    output = str(tmpdir / "output.db")
+    result = CliRunner().invoke(cli.cli, [str(xml_path), output, "--xml"])
+    assert 0 == result.exit_code
+    db = sqlite_utils.Database(output)
+    assert [
+        "workouts",
+        "workout_points",
+        "records",
+        "activity_summary",
+    ] == db.table_names()
