@@ -33,11 +33,11 @@ def convert_xml_to_sqlite(fp, db, progress_callback=None):
             for child in el.findall("MetadataEntry"):
                 record["metadata_" + child.attrib["key"]] = child.attrib["value"]
             records.append(record)
-            if len(records) >= 100:
-                db["records"].insert_all(records, alter=True)
+            if len(records) >= 200:
+                write_records(records, db)
                 records = []
     if records:
-        db["records"].insert_all(records, alter=True)
+        write_records(records, db)
     if activity_summaries:
         db["activity_summary"].insert_all(activity_summaries)
 
@@ -55,3 +55,22 @@ def workout_to_db(workout, db):
         for el in workout.findall("WorkoutRoute/Location")
     ]
     db["workout_points"].insert_all(points, foreign_keys=[("workout_id", "workouts")])
+
+
+def write_records(records, db):
+    # We write records into tables based on their types
+    records_by_type = {}
+    for record in records:
+        table = "r{}".format(
+            record.pop("type")
+            .replace("HKQuantityTypeIdentifier", "")
+            .replace("HKCategoryTypeIdentifier", "")
+        )
+        records_by_type.setdefault(table, []).append(record)
+    # Bulk inserts for each one
+    for table, records_for_table in records_by_type.items():
+        db[table].insert_all(
+            records_for_table,
+            alter=True,
+            column_order=["startDate", "endDate", "value", "unit"],
+        )

@@ -126,10 +126,10 @@ def test_converted_workouts(converted):
 
 
 def test_converted_records(converted):
-    actual = list(converted["records"].rows)
+    # These should have been recorded in rBodyMassIndex and rHeartRate
+    body_mass_actual = list(converted["rBodyMassIndex"].rows)
     assert [
         {
-            "type": "HKQuantityTypeIdentifierBodyMassIndex",
             "sourceName": "Health Mate",
             "sourceVersion": "2160040",
             "unit": "count",
@@ -142,11 +142,11 @@ def test_converted_records(converted):
             "metadata_Modified Date": "2016-04-18 15:56:05 +0000",
             "metadata_Withings Link": "withings-bd2://timeline/measure?userid=12345&date=482685932&type=1",
             "metadata_HKWasUserEntered": "0",
-            "device": None,
-            "metadata_HKMetadataKeyHeartRateMotionContext": None,
-        },
+        }
+    ] == body_mass_actual
+    heart_rate_actual = list(converted["rHeartRate"].rows)
+    assert [
         {
-            "type": "HKQuantityTypeIdentifierHeartRate",
             "sourceName": "Apple\xa0Watch",
             "sourceVersion": "4.3.1",
             "unit": "count/min",
@@ -154,15 +154,10 @@ def test_converted_records(converted):
             "startDate": "2018-09-10 02:28:55 -0700",
             "endDate": "2018-09-10 02:28:55 -0700",
             "value": "72",
-            "metadata_Health Mate App Version": None,
-            "metadata_Withings User Identifier": None,
-            "metadata_Modified Date": None,
-            "metadata_Withings Link": None,
-            "metadata_HKWasUserEntered": None,
             "device": "<<HKDevice: 0x282a45810>, name:Apple Watch, manufacturer:Apple, model:Watch, hardware:Watch2,4, software:4.3.1>",
             "metadata_HKMetadataKeyHeartRateMotionContext": "0",
-        },
-    ] == actual
+        }
+    ] == heart_rate_actual
 
 
 def test_cli_rejects_non_zip(xml_path, tmpdir):
@@ -179,9 +174,10 @@ def test_cli_parses_xml_file(xml_path, tmpdir):
     result = CliRunner().invoke(cli.cli, [str(xml_path), output, "--xml"])
     assert 0 == result.exit_code
     db = sqlite_utils.Database(output)
-    assert [
+    assert {
         "workouts",
         "workout_points",
-        "records",
         "activity_summary",
-    ] == db.table_names()
+        "rHeartRate",
+        "rBodyMassIndex",
+    } == set(db.table_names())
