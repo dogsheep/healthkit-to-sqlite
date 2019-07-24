@@ -2,15 +2,19 @@ from xml.etree import ElementTree as ET
 
 
 def find_all_tags(fp, tags, progress_callback=None):
-    parser = ET.XMLPullParser(["end"])
+    parser = ET.XMLPullParser(("start", "end"))
+    root = None
     while True:
         chunk = fp.read(1024 * 1024)
         if not chunk:
             break
         parser.feed(chunk)
-        for _, el in parser.read_events():
-            if el.tag in tags:
+        for event, el in parser.read_events():
+            if event == "start" and root is None:
+                root = el
+            if event == "end" and el.tag in tags:
                 yield el.tag, el
+            root.clear()
         if progress_callback is not None:
             progress_callback(len(chunk))
 
@@ -36,6 +40,7 @@ def convert_xml_to_sqlite(fp, db, progress_callback=None):
             if len(records) >= 200:
                 write_records(records, db)
                 records = []
+        el.clear()
     if records:
         write_records(records, db)
     if activity_summaries:
