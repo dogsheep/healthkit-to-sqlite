@@ -36,6 +36,7 @@ def convert_xml_to_sqlite(fp, db, progress_callback=None):
             if len(records) >= 200:
                 write_records(records, db)
                 records = []
+        el.clear()
     if records:
         write_records(records, db)
     if activity_summaries:
