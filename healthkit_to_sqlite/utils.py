@@ -59,7 +59,9 @@ def workout_to_db(workout, db):
         dict(el.attrib, workout_id=pk)
         for el in workout.findall("WorkoutRoute/Location")
     ]
-    db["workout_points"].insert_all(points, foreign_keys=[("workout_id", "workouts")])
+    db["workout_points"].insert_all(
+        points, foreign_keys=[("workout_id", "workouts")], batch_size=50
+    )
 
 
 def write_records(records, db):
@@ -78,4 +80,5 @@ def write_records(records, db):
             records_for_table,
             alter=True,
             column_order=["startDate", "endDate", "value", "unit"],
+            batch_size=50,
         )
