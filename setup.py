@@ -26,7 +26,7 @@ setup(
         [console_scripts]
         healthkit-to-sqlite=healthkit_to_sqlite.cli:cli
     """,
-    install_requires=["sqlite-utils"],
+    install_requires=["sqlite-utils~=1.12.1"],
     extras_require={"test": ["pytest"]},
     tests_require=["healthkit-to-sqlite[test]"],
 )
