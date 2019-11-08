@@ -1,9 +1,12 @@
 from click.testing import CliRunner
 from healthkit_to_sqlite import cli, utils
+import io
+import pathlib
 import pytest
 import sqlite_utils
 from sqlite_utils.db import ForeignKey
 import pathlib
+import zipfile
 
 
 @pytest.fixture
@@ -21,6 +24,21 @@ def converted(xml_fp):
     db = sqlite_utils.Database(":memory:")
     utils.convert_xml_to_sqlite(xml_fp, db)
     return db
+
+
+@pytest.fixture
+def zip_file_with_gpx(tmpdir):
+    zip_contents_path = pathlib.Path(__file__).parent / "zip_contents"
+    archive = str(tmpdir / "export.zip")
+    buf = io.BytesIO()
+    zf = zipfile.ZipFile(buf, "w")
+    for filepath in zip_contents_path.glob("**/*"):
+        if filepath.is_file():
+            zf.write(filepath, str(filepath.relative_to(zip_contents_path)))
+    zf.close()
+    with open(archive, "wb") as fp:
+        fp.write(buf.getbuffer())
+    return tmpdir, archive
 
 
 def test_help():
@@ -102,24 +120,24 @@ def test_converted_workouts(converted):
     assert [
         {
             "date": "2016-11-14 07:25:44 -0700",
-            "latitude": "37.7777",
-            "longitude": "-122.426",
-            "altitude": "21.2694",
-            "horizontalAccuracy": "2.40948",
-            "verticalAccuracy": "1.67859",
-            "course": "-1",
-            "speed": "2.48034",
+            "latitude": 37.7777,
+            "longitude": -122.426,
+            "altitude": 21.2694,
+            "horizontalAccuracy": 2.40948,
+            "verticalAccuracy": 1.67859,
+            "course": -1.0,
+            "speed": 2.48034,
             "workout_id": "e615a9651eab4d95debed14c2c2f7cce0c31feed",
         },
         {
             "date": "2016-11-14 07:25:44 -0700",
-            "latitude": "37.7777",
-            "longitude": "-122.426",
-            "altitude": "21.2677",
-            "horizontalAccuracy": "2.40059",
-            "verticalAccuracy": "1.67236",
-            "course": "-1",
-            "speed": "2.48034",
+            "latitude": 37.7777,
+            "longitude": -122.426,
+            "altitude": 21.2677,
+            "horizontalAccuracy": 2.40059,
+            "verticalAccuracy": 1.67236,
+            "course": -1.0,
+            "speed": 2.48034,
             "workout_id": "e615a9651eab4d95debed14c2c2f7cce0c31feed",
         },
     ] == actual_points
@@ -181,3 +199,54 @@ def test_cli_parses_xml_file(xml_path, tmpdir):
         "rHeartRate",
         "rBodyMassIndex",
     } == set(db.table_names())
+
+
+def test_zip_file_with_gpx(zip_file_with_gpx):
+    tmpdir, export = zip_file_with_gpx
+    output = str(tmpdir / "output.db")
+    result = CliRunner().invoke(cli.cli, [export, output])
+    assert result.exit_code == 0, result.output
+    db = sqlite_utils.Database(output)
+    assert {
+        "workouts",
+        "workout_points",
+        "activity_summary",
+        "rHeartRate",
+        "rBodyMassIndex",
+    } == set(db.table_names())
+    # Confirm workout points from GPX were correctly imported
+    assert [
+        {
+            "date": "2019-06-11T22:00:42Z",
+            "latitude": 37.781672,
+            "longitude": -122.396397,
+            "altitude": 4.076904,
+            "horizontalAccuracy": 8.063116,
+            "verticalAccuracy": 6.428697,
+            "course": 206.252884,
+            "speed": 0.180883,
+            "workout_id": "e615a9651eab4d95debed14c2c2f7cce0c31feed",
+        },
+        {
+            "date": "2019-06-11T22:00:42Z",
+            "latitude": 37.78167,
+            "longitude": -122.396396,
+            "altitude": 4.083609,
+            "horizontalAccuracy": 8.29291,
+            "verticalAccuracy": 6.481525,
+            "course": 206.252884,
+            "speed": 0.116181,
+            "workout_id": "e615a9651eab4d95debed14c2c2f7cce0c31feed",
+        },
+        {
+            "date": "2019-06-11T22:00:43Z",
+            "latitude": 37.78167,
+            "longitude": -122.396394,
+            "altitude": 4.085232,
+            "horizontalAccuracy": 8.453521,
+            "verticalAccuracy": 6.549587,
+            "course": 206.252884,
+            "speed": 0.054395,
+            "workout_id": "e615a9651eab4d95debed14c2c2f7cce0c31feed",
+        },
+    ] == list(db["workout_points"].rows)

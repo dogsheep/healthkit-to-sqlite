@@ -22,6 +22,7 @@ EXPORT_XML = "apple_health_export/export.xml"
 @click.option("--xml", is_flag=True, help="Input is XML, not a zip file")
 def cli(export_zip, db_path, silent, xml):
     "Convert HealthKit file from exported zip file into a SQLite database"
+    zf = None
     if xml:
         fp = open(export_zip, "r")
         file_length = os.path.getsize(export_zip)
@@ -42,9 +43,9 @@ def cli(export_zip, db_path, silent, xml):
         file_length = zf.getinfo("apple_health_export/export.xml").file_size
     db = sqlite_utils.Database(db_path)
     if silent:
-        convert_xml_to_sqlite(fp, db)
+        convert_xml_to_sqlite(fp, db, zipfile=zf)
     else:
         with click.progressbar(
             length=file_length, label="Importing from HealthKit"
         ) as bar:
-            convert_xml_to_sqlite(fp, db, progress_callback=bar.update)
+            convert_xml_to_sqlite(fp, db, progress_callback=bar.update, zipfile=zf)

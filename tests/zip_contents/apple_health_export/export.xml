@@ -1,0 +1,24 @@
+<HealthData locale="en_US">
+    <ExportDate value="2019-07-19 10:36:11 -0700"/>
+    <Me HKCharacteristicTypeIdentifierDateOfBirth="1990-02-02" HKCharacteristicTypeIdentifierBiologicalSex="HKBiologicalSexMale" HKCharacteristicTypeIdentifierBloodType="HKBloodTypeNotSet" HKCharacteristicTypeIdentifierFitzpatrickSkinType="HKFitzpatrickSkinTypeNotSet"/>
+    <Record type="HKQuantityTypeIdentifierBodyMassIndex" sourceName="Health Mate" sourceVersion="2160040" unit="count" creationDate="2016-11-20 17:57:19 -0700" startDate="2016-04-18 08:25:32 -0700" endDate="2016-04-18 08:25:32 -0700" value="22.5312">
+        <MetadataEntry key="Health Mate App Version" value="2.16.0"/>
+        <MetadataEntry key="Withings User Identifier" value="12345"/>
+        <MetadataEntry key="Modified Date" value="2016-04-18 15:56:05 +0000"/>
+        <MetadataEntry key="Withings Link" value="withings-bd2://timeline/measure?userid=12345&amp;date=482685932&amp;type=1"/>
+        <MetadataEntry key="HKWasUserEntered" value="0"/>
+    </Record>
+    <Record type="HKQuantityTypeIdentifierHeartRate" sourceName="Apple Watch" sourceVersion="4.3.1" device="&lt;&lt;HKDevice: 0x282a45810&gt;, name:Apple Watch, manufacturer:Apple, model:Watch, hardware:Watch2,4, software:4.3.1&gt;" unit="count/min" creationDate="2018-09-10 02:47:35 -0700" startDate="2018-09-10 02:28:55 -0700" endDate="2018-09-10 02:28:55 -0700" value="72">
+        <MetadataEntry key="HKMetadataKeyHeartRateMotionContext" value="0"/>
+    </Record>
+    <Workout workoutActivityType="HKWorkoutActivityTypeRunning" duration="5.19412346680959" durationUnit="min" totalDistance="0.4971749504535062" totalDistanceUnit="mi" totalEnergyBurned="48.74499999999999" totalEnergyBurnedUnit="kcal" sourceName="Apple Watch" sourceVersion="3.1" creationDate="2016-11-14 07:33:49 -0700" startDate="2016-11-14 07:25:41 -0700" endDate="2016-11-14 07:30:52 -0700">
+        <MetadataEntry key="HKTimeZone" value="America/Los_Angeles"/>
+        <MetadataEntry key="HKWeatherTemperature" value="56 degF"/>
+        <MetadataEntry key="HKWeatherHumidity" value="96 %"/>
+        <WorkoutRoute creationDate="2016-11-14 06:33:54 -0800" endDate="2016-11-14 06:30:51 -0800" sourceName="Simon’s iPhone" sourceVersion="10.1.1" startDate="2016-11-14 06:25:44 -0800">
+            <FileReference path="/workout-routes/route_2019-06-11_3.00pm.gpx"/>
+        </WorkoutRoute>
+    </Workout>
+    <ActivitySummary dateComponents="2016-11-15" activeEnergyBurned="590.252" activeEnergyBurnedGoal="630" activeEnergyBurnedUnit="kcal" appleExerciseTime="68" appleExerciseTimeGoal="30" appleStandHours="13" appleStandHoursGoal="12"/>
+    <ActivitySummary dateComponents="2016-11-16" activeEnergyBurned="323.513" activeEnergyBurnedGoal="630" activeEnergyBurnedUnit="kcal" appleExerciseTime="39" appleExerciseTimeGoal="30" appleStandHours="9" appleStandHoursGoal="12"/>
+</HealthData>

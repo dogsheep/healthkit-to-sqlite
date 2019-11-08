@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="Apple Health Export" xmlns="http://www.topografix.com/GPX/1/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
+  <metadata>
+    <time>2019-11-07T03:43:52Z</time>
+  </metadata>
+  <trk>
+    <name>Route 2019-06-11 3:00pm</name>
+    <trkseg>
+      <trkpt lon="-122.396397" lat="37.781672"><ele>4.076904</ele><time>2019-06-11T22:00:42Z</time><extensions><speed>0.180883</speed><course>206.252884</course><hAcc>8.063116</hAcc><vAcc>6.428697</vAcc></extensions></trkpt>
+      <trkpt lon="-122.396396" lat="37.781670"><ele>4.083609</ele><time>2019-06-11T22:00:42Z</time><extensions><speed>0.116181</speed><course>206.252884</course><hAcc>8.292910</hAcc><vAcc>6.481525</vAcc></extensions></trkpt>
+      <trkpt lon="-122.396394" lat="37.781670"><ele>4.085232</ele><time>2019-06-11T22:00:43Z</time><extensions><speed>0.054395</speed><course>206.252884</course><hAcc>8.453521</hAcc><vAcc>6.549587</vAcc></extensions></trkpt>
+    </trkseg>
+  </trk>
+</gpx>
