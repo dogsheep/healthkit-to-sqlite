@@ -18,7 +18,7 @@ First you need to export your Apple HealthKit data.
 1. On your iPhone, open the "Health" app
 2. Click the profile icon in the top right
 3. Click "Export Health Data" at the bottom of that page
-4. Save the resulting file somewhere you can access it on a laptop - I used Dropbox
+4. Save the resulting file somewhere you can access it, or AirDrop it directly to your laptop.
 
 Now you can convert the resulting `export.zip` file to SQLite like so:
 
