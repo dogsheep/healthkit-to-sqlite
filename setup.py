@@ -1,7 +1,7 @@
 from setuptools import setup
 import os
 
-VERSION = "0.5"
+VERSION = "1.0"
 
 
 def get_long_description():
@@ -19,6 +19,11 @@ setup(
     long_description_content_type="text/markdown",
     author="Simon Willison",
     url="https://github.com/dogsheep/healthkit-to-sqlite",
+    project_urls={
+        "Issues": "https://github.com/dogsheep/healthkit-to-sqlite/issues",
+        "CI": "https://github.com/dogsheep/healthkit-to-sqlite/actions",
+        "Changelog": "https://github.com/dogsheep/healthkit-to-sqlite/releases",
+    },
     license="Apache License, Version 2.0",
     version=VERSION,
     packages=["healthkit_to_sqlite"],
@@ -26,7 +31,7 @@ setup(
         [console_scripts]
         healthkit-to-sqlite=healthkit_to_sqlite.cli:cli
     """,
-    install_requires=["sqlite-utils~=2.4.4"],
+    install_requires=["sqlite-utils>=2.4.4"],
     extras_require={"test": ["pytest"]},
     tests_require=["healthkit-to-sqlite[test]"],
 )
