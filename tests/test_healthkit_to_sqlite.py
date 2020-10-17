@@ -26,15 +26,19 @@ def converted(xml_fp):
     return db
 
 
-@pytest.fixture
-def zip_file_with_gpx(tmpdir):
+@pytest.fixture(params=["export.xml", "exportar.xml"])
+def zip_file_with_gpx(request, tmpdir):
+    export_xml_filename = request.param
     zip_contents_path = pathlib.Path(__file__).parent / "zip_contents"
     archive = str(tmpdir / "export.zip")
     buf = io.BytesIO()
     zf = zipfile.ZipFile(buf, "w")
     for filepath in zip_contents_path.glob("**/*"):
         if filepath.is_file():
-            zf.write(filepath, str(filepath.relative_to(zip_contents_path)))
+            arcname = filepath.relative_to(zip_contents_path)
+            if arcname.name == "export.xml":
+                arcname = arcname.parent / export_xml_filename
+            zf.write(filepath, str(arcname))
     zf.close()
     with open(archive, "wb") as fp:
         fp.write(buf.getbuffer())

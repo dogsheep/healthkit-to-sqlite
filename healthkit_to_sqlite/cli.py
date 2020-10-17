@@ -4,8 +4,6 @@ import zipfile
 import sqlite_utils
 from .utils import convert_xml_to_sqlite
 
-EXPORT_XML = "apple_health_export/export.xml"
-
 
 @click.command()
 @click.argument(
@@ -33,14 +31,22 @@ def cli(export_zip, db_path, silent, xml):
             raise click.ClickException(
                 "File is not a zip file. Use --xml if you are running against an XML file."
             )
-        # Ensure export.xml is in there
+        # Ensure something.xml with <!DOCTYPE HealthData or <HealthData is there
         filenames = {zi.filename for zi in zf.filelist}
-        if EXPORT_XML not in filenames:
-            raise click.ClickException(
-                "Zip file does not contain {}".format(EXPORT_XML)
-            )
-        fp = zf.open(EXPORT_XML)
-        file_length = zf.getinfo("apple_health_export/export.xml").file_size
+        export_xml_path = None
+        for filename in filenames:
+            if filename.count("/") == 1 and filename.endswith(".xml"):
+                firstbytes = zf.open(filename).read(1024)
+                if (
+                    b"<!DOCTYPE HealthData" in firstbytes
+                    or b"<HealthData " in firstbytes
+                ):
+                    export_xml_path = filename
+                    break
+        if export_xml_path is None:
+            raise click.ClickException("Zip file does not contain valid export.xml")
+        fp = zf.open(export_xml_path)
+        file_length = zf.getinfo(export_xml_path).file_size
     db = sqlite_utils.Database(db_path)
     if silent:
         convert_xml_to_sqlite(fp, db, zipfile=zf)
