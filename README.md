@@ -2,7 +2,7 @@
 
 [![PyPI](https://img.shields.io/pypi/v/healthkit-to-sqlite.svg)](https://pypi.org/project/healthkit-to-sqlite/)
 [![CircleCI](https://circleci.com/gh/dogsheep/healthkit-to-sqlite.svg?style=svg)](https://circleci.com/gh/dogsheep/healthkit-to-sqlite)
-[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/dogsheep/healthkit-to-sqlite/blob/master/LICENSE)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/dogsheep/healthkit-to-sqlite/blob/main/LICENSE)
 
 Convert an Apple Healthkit export zip to a SQLite database
 
