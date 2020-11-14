@@ -11,6 +11,10 @@
     <Record type="HKQuantityTypeIdentifierHeartRate" sourceName="Apple Watch" sourceVersion="4.3.1" device="&lt;&lt;HKDevice: 0x282a45810&gt;, name:Apple Watch, manufacturer:Apple, model:Watch, hardware:Watch2,4, software:4.3.1&gt;" unit="count/min" creationDate="2018-09-10 02:47:35 -0700" startDate="2018-09-10 02:28:55 -0700" endDate="2018-09-10 02:28:55 -0700" value="72">
         <MetadataEntry key="HKMetadataKeyHeartRateMotionContext" value="0"/>
     </Record>
+    <Record type="HKQuantityTypeIdentifierDietaryFatTotal" sourceName="MyFitnessPal" sourceVersion="20962" unit="g" creationDate="2017-09-30 13:57:16 +0100" startDate="2017-09-30 13:56:00 +0100" endDate="2017-09-30 13:56:00 +0100" value="21.37">
+      <MetadataEntry key="meal" value="Breakfast"/>
+      <MetadataEntry key="Meal" value="Breakfast"/>
+    </Record>
     <Workout workoutActivityType="HKWorkoutActivityTypeRunning" duration="5.19412346680959" durationUnit="min" totalDistance="0.4971749504535062" totalDistanceUnit="mi" totalEnergyBurned="48.74499999999999" totalEnergyBurnedUnit="kcal" sourceName="Apple Watch" sourceVersion="3.1" creationDate="2016-11-14 07:33:49 -0700" startDate="2016-11-14 07:25:41 -0700" endDate="2016-11-14 07:30:52 -0700">
         <MetadataEntry key="HKTimeZone" value="America/Los_Angeles"/>
         <MetadataEntry key="HKWeatherTemperature" value="56 degF"/>
