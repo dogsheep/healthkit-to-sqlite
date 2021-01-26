@@ -1,4 +1,5 @@
 from xml.etree import ElementTree as ET
+import sqlite3
 
 
 def find_all_tags(fp, tags, progress_callback=None):
@@ -139,9 +140,12 @@ def write_records(records, db):
         records_by_type.setdefault(table, []).append(record)
     # Bulk inserts for each one
     for table, records_for_table in records_by_type.items():
-        db[table].insert_all(
-            records_for_table,
-            alter=True,
-            column_order=["startDate", "endDate", "value", "unit"],
-            batch_size=50,
-        )
+        try:
+            db[table].insert_all(
+                records_for_table,
+                alter=True,
+                column_order=["startDate", "endDate", "value", "unit"],
+                batch_size=50,
+            )
+        except (sqlite3.OperationalError, sqlite3.IntegrityError):
+            pass
