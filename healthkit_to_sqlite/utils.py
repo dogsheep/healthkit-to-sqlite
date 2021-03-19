@@ -1,3 +1,4 @@
+import datetime
 from xml.etree import ElementTree as ET
 
 
@@ -22,9 +23,18 @@ def find_all_tags(fp, tags, progress_callback=None):
 def convert_xml_to_sqlite(fp, db, progress_callback=None, zipfile=None):
     activity_summaries = []
     records = []
+
+    datefmt = "%Y-%m-%d %H:%M:%S %z"
+    date_tags = {"startDate", "endDate", "creationDate"}
+
     for tag, el in find_all_tags(
         fp, {"Record", "Workout", "ActivitySummary"}, progress_callback
     ):
+        for key in date_tags:
+            val = el.get(key)
+            if val is not None:
+                dt = datetime.datetime.strptime(val, datefmt)
+                el.set(key, dt)
         if tag == "ActivitySummary":
             activity_summaries.append(dict(el.attrib))
             if len(activity_summaries) >= 100:
