@@ -1,7 +1,7 @@
 from setuptools import setup
 import os
 
-VERSION = "1.0"
+VERSION = "1.0.1"
 
 
 def get_long_description():
@@ -18,7 +18,7 @@ setup(
     long_description=get_long_description(),
     long_description_content_type="text/markdown",
     author="Simon Willison",
-    url="https://github.com/dogsheep/healthkit-to-sqlite",
+    url="https://datasette.io/tools/healthkit-to-sqlite",
     project_urls={
         "Issues": "https://github.com/dogsheep/healthkit-to-sqlite/issues",
         "CI": "https://github.com/dogsheep/healthkit-to-sqlite/actions",
