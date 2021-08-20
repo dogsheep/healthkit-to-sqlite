@@ -28,7 +28,7 @@ def convert_xml_to_sqlite(fp, db, progress_callback=None, zipfile=None):
         if tag == "ActivitySummary":
             activity_summaries.append(dict(el.attrib))
             if len(activity_summaries) >= 100:
-                db["activity_summary"].insert_all(activity_summaries)
+                db["activity_summary"].insert_all(activity_summaries, alter=True)
                 activity_summaries = []
         elif tag == "Workout":
             workout_to_db(el, db, zipfile)
@@ -44,7 +44,7 @@ def convert_xml_to_sqlite(fp, db, progress_callback=None, zipfile=None):
     if records:
         write_records(records, db)
     if activity_summaries:
-        db["activity_summary"].insert_all(activity_summaries)
+        db["activity_summary"].insert_all(activity_summaries, alter=True)
 
 
 def workout_to_db(workout, db, zipfile=None):
