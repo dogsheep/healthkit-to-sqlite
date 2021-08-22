@@ -31,6 +31,13 @@ def convert_xml_to_sqlite(fp, db, progress_callback=None, zipfile=None):
                 db["activity_summary"].insert_all(activity_summaries, alter=True)
                 activity_summaries = []
         elif tag == "Workout":
+            if "id" not in el:
+                if "HKExternalUUID" in el:
+                    el["id"] = el["HKExternalUUID"]
+                else:
+                    print("No id found for record, skipping:")
+                    print(dict(el.items()))
+                    continue
             workout_to_db(el, db, zipfile)
         elif tag == "Record":
             record = dict(el.attrib)
