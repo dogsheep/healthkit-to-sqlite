@@ -22,6 +22,7 @@ def find_all_tags(fp, tags, progress_callback=None):
 def convert_xml_to_sqlite(fp, db, progress_callback=None, zipfile=None):
     activity_summaries = []
     records = []
+    metadata_keys_map = {}
     for tag, el in find_all_tags(
         fp, {"Record", "Workout", "ActivitySummary"}, progress_callback
     ):
@@ -35,7 +36,20 @@ def convert_xml_to_sqlite(fp, db, progress_callback=None, zipfile=None):
         elif tag == "Record":
             record = dict(el.attrib)
             for child in el.findall("MetadataEntry"):
-                record["metadata_" + child.attrib["key"]] = child.attrib["value"]
+                # sqlite does not have case sensitive columns, have to
+                # distinguish between meta_start and meta_Start
+                # we will make meta_Start into meta_start_1
+                # that mapping is saved for other records to
+                # metadata_keys_map
+                meta_key = "metadata_" + child.attrib["key"]
+                candidates = list(filter(
+                    lambda k: k[0].lower() == (meta_key).lower(),
+                    metadata_keys_map.items()))
+                if not candidates:
+                    metadata_keys_map[meta_key] = meta_key
+                elif meta_key not in metadata_keys_map.keys():
+                    metadata_keys_map[meta_key] = meta_key + "_" + str(len(candidates))
+                record[metadata_keys_map[meta_key]] = child.attrib["value"]
             records.append(record)
             if len(records) >= 200:
                 write_records(records, db)
