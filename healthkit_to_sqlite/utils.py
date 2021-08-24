@@ -35,7 +35,9 @@ def convert_xml_to_sqlite(fp, db, progress_callback=None, zipfile=None):
         elif tag == "Record":
             record = dict(el.attrib)
             for child in el.findall("MetadataEntry"):
-                record["metadata_" + child.attrib["key"]] = child.attrib["value"]
+                metadata_name = "metadata_" + child.attrib["key"]
+                metadata_name = _create_unique_key(metadata_name, record.keys())
+                record[metadata_name] = child.attrib["value"]
             records.append(record)
             if len(records) >= 200:
                 write_records(records, db)
@@ -45,6 +47,16 @@ def convert_xml_to_sqlite(fp, db, progress_callback=None, zipfile=None):
         write_records(records, db)
     if activity_summaries:
         db["activity_summary"].insert_all(activity_summaries, alter=True)
+
+def _create_unique_key(key, existing_keys):
+    """Appends a number to key if lower(key) is already in lower(existing_keys)"""
+    unqiue_key = key
+    postfix = 2
+    keys = [str.lower(key) for key in existing_keys]
+    while str.lower(unqiue_key) in keys:
+        unqiue_key = key + "_" + str(postfix)
+        postfix += 1
+    return unqiue_key
 
 
 def workout_to_db(workout, db, zipfile=None):
