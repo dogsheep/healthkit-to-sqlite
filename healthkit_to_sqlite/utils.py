@@ -54,6 +54,7 @@ def workout_to_db(workout, db, zipfile=None):
         record["metadata_" + el.attrib["key"]] = el.attrib["value"]
     # Dump any WorkoutEvent in a nested list for the moment
     record["workout_events"] = [el.attrib for el in workout.findall("WorkoutEvent")]
+    record["workout_statistics"] = [el.attrib for el in workout.findall("WorkoutStatistics")]
     pk = db["workouts"].insert(record, alter=True, hash_id="id").last_pk
     # Handle embedded WorkoutRoute/Location points
     points = [
